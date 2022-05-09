@@ -1,5 +1,5 @@
-const userModel=require('../models/userModel')
-const validator=require('validator');
+const userModel = require('../models/userModel')
+const validator = require('validator');
 const { copyFileSync } = require('fs');
 
 //-----validating the enum of the title---------------//
@@ -24,44 +24,67 @@ const createUser=async (req,res)=>{
         let {title,name,phone,email,password,address}=data
         let emailId=email.trim()
         console.log(emailId)
-        let passwordcopy=password.trim()
-      
+        let passwordcopy=password.trim()      
 
         //.....checking the body is present or not------------//
-        if(!isValidReqBody(data)) return  res.status(400).send({status:false,message:'please enter the details of the user'})
+        if(!isValidReqBody(data)) 
+        return  res.status(400).send({status:false,message:'please enter the details of the user'})
         
         //------validation of title----//
-        if(!isValid(title)) return  res.status(400).send({status:false,message:'please enter the title'})
+        if(!isValid(title)) 
+        return  res.status(400).send({status:false,message:'please enter the title'})
       
-        if(!isValidTitle(title)) return res.status(400).send({status:false,message:'please enter the valid title'})
+        if(!isValidTitle(title)) 
+        return res.status(400).send({status:false,message:'please enter the valid title'})
+
         //---- name validation-------------//
-         if(!isValid(name))  return res.status(400).send({status:false,message:'please enter the valid name'})
+         if(!isValid(name))  
+         return res.status(400).send({status:false,message:'please enter the valid name'})
+
         //----mobile validaiton------//
-        if(!isValid(phone))  return res.status(400).send({status:false,message:'please enter the valid phone'})
+        if(!isValid(phone))  
+        return res.status(400).send({status:false,message:'please enter the valid phone'})
+
         //----checking mobile number is correct format or not ----//
-        if(!validator.isNumeric(phone.trim())) return res.status(400).send({status:false,message:'phone number must be only numbers'})
-        if((phone.trim().length!=10))return res.status(400).send({status:false,message:'phone number must be 10 digits'})
+        if(!validator.isNumeric(phone.trim())) 
+        return res.status(400).send({status:false,message:'phone number must be only numbers'})
+
+        if((phone.trim().length!=10)) 
+        return res.status(400).send({status:false,message:'phone number must be 10 digits'})
 
         //----chekcing the phone number in db preveiouly exists or not -------//
         let numberexist=await userModel.findOne({phone})
-        if(numberexist) return res.status(400).send({status:false,message:`This ${phone} number  is already registerd`})
+
+        if(numberexist) 
+        return res.status(400).send({status:false,message:`This ${phone} number  is already registered`})
 
         //----------checking email is valid or not-------------.//
-        if(!isValid(email))return res.status(400).send({status:false,message:'Email must be present'})
-        if(!validator.isEmail(emailId)) return res.status(400).send({status:false,message:`${emailId} is not valid`})
+        if(!isValid(email))
+        return res.status(400).send({status:false,message:'Email must be present'})
+
+        if(!validator.isEmail(emailId)) 
+        return res.status(400).send({status:false,message:`${emailId} is not valid`})
+        
          //-----checking email is regiterd already ------------//
         let emailexist=await userModel.find({email:emailId})
-        console.log(emailexist.length)
-        if(emailexist.length!=0) return res.status(400).send({status:false,message:`This ${emailId} email  is already registerd`})
+        // console.log(emailexist.length)
+        if(emailexist.length!=0) 
+        return res.status(400).send({status:false,message:`This ${emailId} email  is already registerd`})
 
         //----password validation  ----------------//
-        if(!isValid(password))  return res.status(400).send({status:false,message:"This passord is not present"})
+        if(!isValid(password))  
+        return res.status(400).send({status:false,message:"This password is not present"})
 
         //--------------chekcing the lenght of the password----//
-        if(!(passwordcopy.length>=8) && (passwordcopy.length<=15))  return res.status(400).send({status:false,message:"This passord length must in between 8 to 15 letters"})
-        //--------------checking the adress is proper format or not--------//
-        if(!isValid(address))  return res.status(400).send({status:false,message:"This enter the address"})
-        if(!validator.isNumeric(address.pincode))  return res.status(400).send({status:false,message:"This entered pincode should be number"})
+        if(!(passwordcopy.length>=8) && (passwordcopy.length<=15))  
+        return res.status(400).send({status:false,message:"The password length must in between 8 to 15 letters"})
+        
+        //--------------checking the address is proper format or not--------//
+        if(!isValid(address))  
+        return res.status(400).send({status:false,message:"This enter the address"})
+        
+        if(!validator.isNumeric(address.pincode))  
+        return res.status(400).send({status:false,message:"This entered pincode should be number"})
 
      
         let userdata=await userModel.create(data)

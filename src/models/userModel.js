@@ -1,5 +1,6 @@
-const mongoose=require('mongoose')
-const user=new mongoose.Schema({
+const mongoose = require('mongoose')
+
+const user = new mongoose.Schema({
     title:{
         type:String,
         requried:true,
@@ -30,4 +31,5 @@ const user=new mongoose.Schema({
         pincode:String
     }
 },{timestamps:true})
+
 module.exports=mongoose.model("user",user)
