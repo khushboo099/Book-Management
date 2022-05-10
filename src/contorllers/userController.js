@@ -108,16 +108,15 @@ const createUser = async (req, res) => {
       });
 
     //--------------checking the address is proper format or not--------//
-    if (!isValid(address))
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter the address" });
-
+   if (address.pincode){
+    //  console.log(address.pincode.length)
+     if(!((address.pincode.trim().length) == 6)) return res.status(400).send({status:false,message:"pincode length must be 6 digits"})
     if (!validator.isNumeric(address.pincode))
       return res.status(400).send({
         status: false,
         message: "The entered pincode should be number",
       });
+    }
 
     let userdata = await userModel.create(data);
     res.status(201).send({
