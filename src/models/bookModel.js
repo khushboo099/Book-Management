@@ -10,7 +10,7 @@ const book=new mongoose.Schema({
     excerpt:{
         type:String,
         required:true,
-        trime:true1
+        trime:true
     },
     userId:{
         type:mongoose.Schema.Types.ObjectId,
@@ -45,8 +45,9 @@ const book=new mongoose.Schema({
         default:false
     },
     releasedAt:{
-        type:Date,
-        default:true
+        type:String,
+        required:true
+    
     }
 },{timestamps:true})
 
