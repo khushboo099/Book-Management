@@ -131,7 +131,7 @@ const createUser = async (req, res) => {
 
 
 const loginUser = async (req, res) => {
-  let { email, password } = req.body;
+ try{ let { email, password } = req.body;
 
   if (!isValidReqBody(req.body))
     return res
@@ -180,6 +180,9 @@ const loginUser = async (req, res) => {
   );
   res.setHeader("x-api-key", token);
   res.status(201).send({ status: true, token: token });
+}catch (err) {
+  res.status(500).send({ status: false, error: err.message });
+}
 };
 
 module.exports = {
