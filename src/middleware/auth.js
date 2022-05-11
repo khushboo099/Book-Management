@@ -23,6 +23,7 @@ const authorization = async (res, req, next) => {
     try {
         let token = req.headers['X-API-KEY'];
         if (!token) token = req.headers['x-api-key'];
+        let user = req.body
         let data = req.params.bookId
         if (!data) return res.status(400).send({ status: false, msg: "provide bookId" })
         if (!isValidObjectId(data)) return res.status(400).send({ status: false, msg: `${data} invalid bookId` })
@@ -30,7 +31,7 @@ const authorization = async (res, req, next) => {
         if(!bookDetails) return res.status(404).send({ status: false, msg:` can not find book with this id-${data}`})
         let decodeToken = jwt.verify(token, "group@50//project@bookmanagement//")
 
-        if (bookDetails.userId.toString() === decodeToken.userId) {
+        if (bookDetails.userId.toString() === decodeToken.userId || user.userId.toString() === decodeToken.userId) {
             next()
         } else {
             res.status(401).send({status: false, msg: "You are not authorized"})
