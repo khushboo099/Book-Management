@@ -60,7 +60,7 @@ const bookCreation = async function (req, res) {
                 .send({ status: false, message: "please enter ISBN " });
         if (!Validator.isISBN(ISBN))
             return res.status(400).send({ status: false, message: "invalid ISBN" });
-    // if (!findUser) return res.status(404).send({ status: false, message: "User  is not present with userId" });
+        // if (!findUser) return res.status(404).send({ status: false, message: "User  is not present with userId" });
         let findISBN = await bookModel.findOne({ ISBN });
         console.log(findISBN);
         if (findISBN)
@@ -105,5 +105,45 @@ const bookCreation = async function (req, res) {
     } catch (err) {
         return res.status(500).send({ status: false, error: err.message });
     }
+}
+
+        // ------Get All Books--------//
+ const getAllBooks = async function (req, res) {
+            try {
+         let queryParams = req.query;
+
+                //--------validation of userId------//
+                if (queryParams.userId) {
+                    if (!isValidObjectId(queryParams.userId))
+                        return res
+                            .status(400)
+                            .send({ status: false, message: "Invalid userId" });
+                }
+
+                const booksData = await bookModel
+                    .find({ isDeleted: false, ...queryParams })
+                    .select({
+                        ISBN: 0,
+                        isDeleted: 0,
+                        updatedAt: 0,
+                        createdAt: 0,
+                        __v: 0,
+                    });
+
+                if (booksData.length === 0)
+                    return res.status(404).send({ status: false, message: "No books found" });
+
+                const sortedBooks = booksData.sort((a, b) =>
+                    a.title.localeCompare(b.title)
+                );
+                res.status(200).send({ status: true, data: sortedBooks });
+
+            } catch (err) {
+                return res.status(500).send({ status: false, error: err.message });
+            }
+        };
+
+module.exports = {
+    bookCreation,
+    getAllBooks
 };
-module.exports = { bookCreation };
