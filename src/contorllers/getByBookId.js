@@ -55,11 +55,10 @@ const deletedata = async (req, res) => {
       .send({ stauts: false, message: "no such book is present " });
   let bookDelete = await bookModel.findByIdAndUpdate(
     deleteData,
-    { $set: { isDeleted: true, deletedAt: Date.now() } },
-    { new: true }
+    { $set: { isDeleted: true, deletedAt: Date.now() } }
   );
 
   console.log(bookExist);
-  res.status(200).send({ status: 400, message: bookDelete });
+  res.status(200).send({ status:true, message:"your book is deleted successfully"});
 };
 module.exports = { getBookById, deletedata };

@@ -1,6 +1,5 @@
-
-const mongoose = require("mongoose");
 const bookModel = require("../models/bookModel");
+const validator = require('validator')
 
 const updatebook = async function (req, res) {
     try {
@@ -20,6 +19,16 @@ const updatebook = async function (req, res) {
         //--------update only these property--------//
         if (!(title || excerpt || releasedAt || ISBN)) {
             return res.status(400).send({ status: false, massage: "This Property can't be update" })
+        }
+        if(title){
+            let findTitle = await bookModel.findOne({title})
+            if(findTitle) return res.status(400).send({ status: false, massage: "title is already present with another book" })
+        }
+        if(ISBN){
+            if (!validator.isISBN(ISBN))
+            return res.status(400).send({ status: false, message: "invalid ISBN" });
+            let findISBN = await bookModel.findOne({ISBN}) 
+            if(findISBN) return res.status(400).send({status: false, massage: "ISBN is already assign to another book"})
         }
         //------already deleted---------------//
         if (book.isDeleted === true) {

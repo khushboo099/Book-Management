@@ -19,23 +19,31 @@ const authentication = async (req, res, next) => {
         res.status(500).send({ status: false, error: err.message });
     }
 }
-const authorization = async (res, req, next) => {
+const authorization = async (req,res,next) => {
     try {
         let token = req.headers['X-API-KEY'];
         if (!token) token = req.headers['x-api-key'];
-        let user = req.body
+        let decodeToken = jwt.verify(token, "group@50//project@bookmanagement//")
+        
         let data = req.params.bookId
-        if (!data) return res.status(400).send({ status: false, msg: "provide bookId" })
-        if (!isValidObjectId(data)) return res.status(400).send({ status: false, msg: `${data} invalid bookId` })
+        if(data){
+        if (!data) return res.status(400).send({ status: false, msg: "provide bookId"})
+        if (!isValidObjectId(data)) return res.status(400).send({ status: false, msg:" invalid bookId "})
         let bookDetails = await bookModel.findById(data)
         if(!bookDetails) return res.status(404).send({ status: false, msg:` can not find book with this id-${data}`})
-        let decodeToken = jwt.verify(token, "group@50//project@bookmanagement//")
-
-        if (bookDetails.userId.toString() === decodeToken.userId || user.userId.toString() === decodeToken.userId) {
+        if (bookDetails.userId.toString() === decodeToken.userId )
+             next()
+         else 
+             res.status(401).send({status: false, msg: "You are not authorized"})
+        }
+        let user = req.body
+        if(user.userId){
+        if (user.userId.toString() === decodeToken.userId) {
             next()
         } else {
-            res.status(401).send({status: false, msg: "You are not authorized"})
+            res.status(401).send({status: false, msg: "You are not authorized, check userId"})
         }
+    }
     } catch (err) {
         res.status(500).send({ status: false, error: err.message });
     }
