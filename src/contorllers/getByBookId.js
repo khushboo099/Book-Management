@@ -4,7 +4,7 @@ const reviewModel = require("../models/reviewModel");
 const getBookById = async (req, res) => {
   try {
     let data = req.params.bookId;
-    console.log(data);
+    // console.log(data);
     if (!data)
       return res
         .status(400)
@@ -14,22 +14,20 @@ const getBookById = async (req, res) => {
         .status(400)
         .send({ status: false, message: "please enter the valid Book id" });
     let bookData = await bookModel.findById(data);
-    console.log(bookData);
+    // console.log(bookData);
     if (!bookData)
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "This book id did not mathed with any book in the data base",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "This book id did not mathed with any book in the data base",
+      });
     if (bookData.isDeleted)
-      return res
-        .status(404)
-        .send({
-          status: false,
-          message: "this book is deleted from the  data base",
-        });
-    const reviewsData = await reviewModel.find({ data }); 
+      return res.status(404).send({
+        status: false,
+        message: "this book is deleted from the  data base",
+      });
+    const reviewsData = await reviewModel.find({ data });
+    const reviewCount = reviewsData.length
+    bookData.review = reviewCount
     res
       .status(200)
       .json({ status: true, data: bookData, reviewsData: reviewsData });
@@ -53,12 +51,13 @@ const deletedata = async (req, res) => {
     return res
       .status(400)
       .send({ stauts: false, message: "no such book is present " });
-  let bookDelete = await bookModel.findByIdAndUpdate(
-    deleteData,
-    { $set: { isDeleted: true, deletedAt: Date.now() } }
-  );
+  let bookDelete = await bookModel.findByIdAndUpdate(deleteData, {
+    $set: { isDeleted: true, deletedAt: Date.now() },
+  });
 
-  console.log(bookExist);
-  res.status(200).send({ status:true, message:"your book is deleted successfully"});
+  // console.log(bookExist);
+  res
+    .status(200)
+    .send({ status: true, message: "your book is deleted successfully" });
 };
 module.exports = { getBookById, deletedata };

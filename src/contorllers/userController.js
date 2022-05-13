@@ -108,14 +108,17 @@ const createUser = async (req, res) => {
       });
 
     //--------------checking the address is proper format or not--------//
-   if (address.pincode){
-    //  console.log(address.pincode.length)
-     if(!((address.pincode.trim().length) == 6)) return res.status(400).send({status:false,message:"pincode length must be 6 digits"})
-    if (!validator.isNumeric(address.pincode))
-      return res.status(400).send({
-        status: false,
-        message: "The entered pincode should be number",
-      });
+    if (address.pincode) {
+      //  console.log(address.pincode.length)
+      if (!(address.pincode.trim().length == 6))
+        return res
+          .status(400)
+          .send({ status: false, message: "pincode length must be 6 digits" });
+      if (!validator.isNumeric(address.pincode))
+        return res.status(400).send({
+          status: false,
+          message: "The entered pincode should be number",
+        });
     }
 
     let userdata = await userModel.create(data);
@@ -129,60 +132,58 @@ const createUser = async (req, res) => {
   }
 };
 
-
 const loginUser = async (req, res) => {
- try{ let { email, password } = req.body;
+  try {
+    let { email, password } = req.body;
 
-  if (!isValidReqBody(req.body))
-    return res
-      .status(400)
-      .send({ status: false, message: "please enter login credentials" });
-  //-------------email validation---------------//
-  if (!isValid(email))
-    return res
-      .status(400)
-      .send({ status: false, message: "please enter the email" });
-  if (!validator.isEmail(email))
-    return res
-      .status(400)
-      .send({ status: false, message: `${email} email is not valid` });
+    if (!isValidReqBody(req.body))
+      return res
+        .status(400)
+        .send({ status: false, message: "please enter login credentials" });
+    //-------------email validation---------------//
+    if (!isValid(email))
+      return res
+        .status(400)
+        .send({ status: false, message: "please enter the email" });
+    if (!validator.isEmail(email))
+      return res
+        .status(400)
+        .send({ status: false, message: `${email} email is not valid` });
 
-  let userExist = await userModel.findOne({ email });
-  if (!userExist)
-    return res
-      .status(401)
-      .send({ status: false, message: "this email is not registered" });
-  //------------pasword validation------------//
-  if (!isValid(password))
-    return res
-      .status(400)
-      .send({ status: false, message: "This password is not present" });
-  if (!(password.length >= 8) && password.length <= 15)
-    return res.status(400).send({
-      status: false,
-      message: "The password length must in between 8 to 15 letters",
-    });
-  let passwordValid = await userModel.findOne({ password });
-  if (!passwordValid)
-    return res
-      .status(401)
-      .send({
+    let userExist = await userModel.findOne({ email });
+    if (!userExist)
+      return res
+        .status(401)
+        .send({ status: false, message: "this email is not registered" });
+    //------------pasword validation------------//
+    if (!isValid(password))
+      return res
+        .status(400)
+        .send({ status: false, message: "This password is not present" });
+    if (!(password.length >= 8) && password.length <= 15)
+      return res.status(400).send({
+        status: false,
+        message: "The password length must in between 8 to 15 letters",
+      });
+    let passwordValid = await userModel.findOne({ password });
+    if (!passwordValid)
+      return res.status(401).send({
         status: false,
         message: "this password is not matching with your email id",
       });
-  let token = jwt.sign(
-    {
-      userId: userExist._id.toString(),
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 60,
-    },
-    "group@50//project@bookmanagement//"
-  );
-  res.setHeader("x-api-key", token);
-  res.status(201).send({ status: true, token: token });
-}catch (err) {
-  res.status(500).send({ status: false, error: err.message });
-}
+    let token = jwt.sign(
+      {
+        userId: userExist._id.toString(),
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 60,
+      },
+      "group@50//project@bookmanagement//"
+    );
+    res.setHeader("x-api-key", token);
+    res.status(201).send({ status: true, token: token });
+  } catch (err) {
+    res.status(500).send({ status: false, error: err.message });
+  }
 };
 
 module.exports = {

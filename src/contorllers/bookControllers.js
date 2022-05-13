@@ -62,7 +62,7 @@ const bookCreation = async function (req, res) {
             return res.status(400).send({ status: false, message: "invalid ISBN" });
         // if (!findUser) return res.status(404).send({ status: false, message: "User  is not present with userId" });
         let findISBN = await bookModel.findOne({ ISBN });
-        console.log(findISBN);
+        // console.log(findISBN);
         if (findISBN)
             return res
                 .status(400)
