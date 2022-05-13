@@ -25,9 +25,7 @@ const getBookById = async (req, res) => {
         status: false,
         message: "this book is deleted from the  data base",
       });
-    const reviewsData = await reviewModel.find({ data });
-    const reviewCount = reviewsData.length
-    bookData.review = reviewCount
+    const reviewsData = await reviewModel.find({bookId:data});
     res
       .status(200)
       .json({ status: true, data: bookData, reviewsData: reviewsData });
