@@ -25,7 +25,6 @@ const reviews = async (req, res) => {
         .send({ status: false, message: `fill details about review` });
     const { reviewedBy, reviewedAt, rating, review } = bodyData;
 
-
     if (!isValid(rating))
       return res
         .status(400)
@@ -54,19 +53,17 @@ const updateReview = async (req, res) => {
   // console.log(bookId)
   let reviewId = req.params.reviewId;
   if (!isValid(reviewId))
-  return res
-    .status(400)
-    .send({ status: false, message: `reviewedBy field is mandatory` });
-  
+    return res
+      .status(400)
+      .send({ status: false, message: `reviewedBy field is mandatory` });
+
   const reviews = await reviewModel.findById(reviewId);
   // console.log(reviews.bookId)
   if (reviews.bookId.toString() !== bookId)
-    return res
-      .status(400)
-      .send({
-        status: false,
-        msg: `your review's bookId is not match with your given bookId`,
-      });
+    return res.status(400).send({
+      status: false,
+      msg: `your review's bookId is not match with your given bookId`,
+    });
   if (!reviews || reviews.isDeleted)
     return res
       .status(404)
@@ -96,18 +93,16 @@ const deleteReview = async (req, res) => {
 
   let reviewId = req.params.reviewId;
   if (!isValid(reviewId))
-  return res
-    .status(400)
-    .send({ status: false, message: `reviewedBy field is mandatory` });
+    return res
+      .status(400)
+      .send({ status: false, message: `reviewedBy field is mandatory` });
   const reviews = await reviewModel.findById(reviewId);
   // console.log(reviews.bookId)
   if (reviews.bookId.toString() !== bookId)
-    return res
-      .status(400)
-      .send({
-        status: false,
-        msg: `your review's bookId is not match with your given bookId`,
-      });
+    return res.status(400).send({
+      status: false,
+      msg: `your review's bookId is not match with your given bookId`,
+    });
   if (!reviews || reviews.isDeleted)
     return res
       .status(404)
