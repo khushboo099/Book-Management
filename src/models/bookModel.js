@@ -11,7 +11,7 @@ const book = new mongoose.Schema(
     excerpt: {
       type: String,
       required: true,
-      trime: true,
+      trim: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,5 +1,4 @@
 const { default: mongoose } = require("mongoose");
-const { create, findByIdAndUpdate } = require("../models/bookModel");
 const bookModel = require("../models/bookModel");
 const reviewModel = require("../models/reviewModel");
 const validator = require("validator");
