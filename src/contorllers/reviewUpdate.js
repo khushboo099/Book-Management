@@ -26,10 +26,7 @@ const reviews = async (req, res) => {
         .send({ status: false, message: `fill details about review` });
     const { reviewedBy, reviewedAt, rating, review } = bodyData;
 
-    if (!isValid(reviewedBy))
-      return res
-        .status(400)
-        .send({ status: false, message: `reviewedBy field is mandatory` });
+
     if (!isValid(rating))
       return res
         .status(400)
