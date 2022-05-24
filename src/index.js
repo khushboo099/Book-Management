@@ -2,7 +2,15 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const route = require('./route/route.js');
 const mongoose = require('mongoose');
+const multer = require('multer');
 const app = express();
+
+const { AppConfig } = require('aws-sdk');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use( multer().any())
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
